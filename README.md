@@ -3,7 +3,7 @@ cut-trailing-bytes
 A tool to cut trailing bytes, default cut trailing NULL(0x00 in hex) bytes
 
 # Example
-
+ 
 ```bash
 $ echo "hello" > hello_00
 
