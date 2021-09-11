@@ -6,6 +6,8 @@ use std::path::PathBuf;
 use structopt::StructOpt;
 use std::num::ParseIntError;
 
+use indicatif::{ProgressBar, ProgressStyle};
+
 fn parse_hex(s: &str) -> Result<u8, ParseIntError> {
     u8::from_str_radix(s, 16)
 }
@@ -36,8 +38,14 @@ fn main() -> io::Result<()> {
     let mut tmp_len = 0;
     let mut buffer = [0; 4096];
 
+    let x = File::metadata(&f)?.len();
+    let pb = ProgressBar::new(x);
+    pb.set_style(ProgressStyle::default_bar()
+        .template("{spinner:.green} [{elapsed_precise}] [{wide_bar:.cyan/blue}] {bytes}/{total_bytes} ({eta})"));
+
     loop {
         let mut n = f.read(&mut buffer[..])?;
+        pb.inc(4096);
         if n == 0 { break; }
         for byte in buffer.bytes() {
             match byte.unwrap() {
