@@ -37,7 +37,7 @@ fn main() -> io::Result<()> {
     let opt = Opt::from_args();
     let filename = &opt.file;
     let mut f = File::open(filename)?;
-    let mut buffer = [0; 4096];
+    let mut buffer = [0; 524288];
     let mut valid_len = f.seek(SeekFrom::End(0)).unwrap();
     let total = valid_len;
     let mut tmp_len = 0;
@@ -45,11 +45,11 @@ fn main() -> io::Result<()> {
 
     let pb = ProgressBar::new(valid_len);
     pb.set_style(ProgressStyle::default_bar()
-        .template("{spinner:.green} [{elapsed_precise}] [{bar:.cyan/blue}] {bytes}/{total_bytes} {msg} ({eta})"));
+        .template("{spinner:.green} [{elapsed_precise}] [{bar:.cyan/blue}] {bytes}/{total_bytes} {msg} {binary_bytes_per_sec} ({eta})"));
 
     loop {
-        if valid_len >= 4096 {
-            valid_len = f.seek(SeekFrom::Current(-4096))?;
+        if valid_len >= 524288 {
+            valid_len = f.seek(SeekFrom::Current(-524288))?;
         } else {
             valid_len = f.seek(SeekFrom::Start(0))?;
         }
@@ -69,12 +69,12 @@ fn main() -> io::Result<()> {
             n -= 1;
             if n == 0 { break; }
         }
-        pb.inc(4096);
+        pb.inc(524288);
         // exit if 1st buffer passed
         tmp_len = 0;
-        if valid_len < 4096 { break; }
+        if valid_len < 524288 { break; }
         // exit if at least one char doesnt match
-        if valid_len > f.seek(SeekFrom::Current(-4096))? { break; }
+        if valid_len > f.seek(SeekFrom::Current(-524288))? { break; }
     }
     pb.finish_at_current_pos();
     // pb.finish_with_message("done");
