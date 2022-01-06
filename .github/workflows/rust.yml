@@ -16,7 +16,11 @@ jobs:
     - name: Build
       run: cargo build --release --verbose
     - name: Run tests
-      run: cargo test --verbose
+      run: |
+        ls -l
+        ls -l .\target\
+        ls -l .\target\release\
+        
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
       with:
