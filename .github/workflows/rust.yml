@@ -18,10 +18,11 @@ jobs:
     - name: Run tests
       run: |
         ls -l
-        ls -l .\target\
-        ls -l .\target\release\
+        ls target
+        ls target/release
         
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
       with:
-        path: target\release\cut-trailing-bytes.exe
+        name: test
+        path: target/release/cut-trailing-bytes.exe
